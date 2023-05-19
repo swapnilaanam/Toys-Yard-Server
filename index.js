@@ -37,12 +37,19 @@ async function run() {
             res.send(result);
         });
 
+        app.get('/toys', async (req, res) => {
+            const cursor = toyCollection.find();
+
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
         app.post('/toys', async (req, res) => {
             const newToy = req.body;
 
             const result = await toyCollection.insertOne(newToy);
             res.send(result);
-        })
+        });
 
 
         // Send a ping to confirm a successful connection
