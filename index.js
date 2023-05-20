@@ -45,7 +45,7 @@ async function run() {
 
 
         app.get('/toys', async (req, res) => {
-            const cursor = toyCollection.find();
+            const cursor = toyCollection.find().limit(20);
 
             const result = await cursor.toArray();
             res.send(result);
@@ -86,7 +86,7 @@ async function run() {
 
             const result = await cursor.toArray();
             res.send(result);
-        })
+        });
 
         app.post('/toys', async (req, res) => {
             const newToy = req.body;
