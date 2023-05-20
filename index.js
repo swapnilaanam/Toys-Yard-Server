@@ -30,6 +30,12 @@ async function run() {
         const subCategoryCollection = client.db('toysDB').collection('subcategories');
         const toyCollection = client.db('toysDB').collection('toys');
 
+        const indexKeys = { toyName: 1 };
+
+        const indexOptions = { name: "toyName" }
+
+        const result = await toyCollection.createIndex(indexKeys, indexOptions);
+
         app.get('/subcategories', async (req, res) => {
             const cursor = subCategoryCollection.find();
 
@@ -54,6 +60,7 @@ async function run() {
             res.send(result);
         })
 
+
         app.get('/toys/category/:subcategory', async (req, res) => {
             let subcategory = req.params.subcategory;
 
@@ -69,6 +76,17 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         });
+
+        app.get('/toys/search/toyname', async (req, res) => {
+            const toyName = req.query.name;
+
+            const query = { toyName: { $regex: toyName, $options: "i" } }
+
+            const cursor = toyCollection.find(query);
+
+            const result = await cursor.toArray();
+            res.send(result);
+        })
 
         app.post('/toys', async (req, res) => {
             const newToy = req.body;
