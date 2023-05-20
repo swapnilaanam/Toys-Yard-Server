@@ -36,6 +36,8 @@ async function run() {
 
         const result = await toyCollection.createIndex(indexKeys, indexOptions);
 
+        // get route for all sub categories
+
         app.get('/subcategories', async (req, res) => {
             const cursor = subCategoryCollection.find();
 
@@ -44,6 +46,7 @@ async function run() {
         });
 
 
+        // get route for all toys (limit at 20)
         app.get('/toys', async (req, res) => {
             const cursor = toyCollection.find().limit(20);
 
@@ -51,6 +54,21 @@ async function run() {
             res.send(result);
         });
 
+
+        // get route for my toys
+        app.get('/toys/mytoys', async (req, res) => {
+            const email = req.query.email;
+
+            const query = { sellerEmail: email };
+
+            const cursor = toyCollection.find(query);
+
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+
+        // get route for single toy details
         app.get('/toys/:id', async (req, res) => {
             const id = req.params.id;
 
@@ -58,9 +76,23 @@ async function run() {
 
             const result = await toyCollection.findOne(query);
             res.send(result);
-        })
+        });
 
 
+        // get route for searching by name in all toys
+        app.get('/toys/search/toyname', async (req, res) => {
+            const toyName = req.query.name;
+
+            const query = { toyName: { $regex: toyName, $options: "i" } }
+
+            const cursor = toyCollection.find(query);
+
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+
+        // get route for showing toys by category in the tabs
         app.get('/toys/category/:subcategory', async (req, res) => {
             let subcategory = req.params.subcategory;
 
@@ -77,16 +109,6 @@ async function run() {
             res.send(result);
         });
 
-        app.get('/toys/search/toyname', async (req, res) => {
-            const toyName = req.query.name;
-
-            const query = { toyName: { $regex: toyName, $options: "i" } }
-
-            const cursor = toyCollection.find(query);
-
-            const result = await cursor.toArray();
-            res.send(result);
-        });
 
         app.post('/toys', async (req, res) => {
             const newToy = req.body;
