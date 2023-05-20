@@ -37,8 +37,25 @@ async function run() {
             res.send(result);
         });
 
+
         app.get('/toys', async (req, res) => {
             const cursor = toyCollection.find();
+
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        app.get('/toys/category/:subcategory', async (req, res) => {
+            let subcategory = req.params.subcategory;
+
+            const first = subcategory.charAt(0).toUpperCase();
+            const remaining = subcategory.slice(1);
+
+            subcategory = first + remaining;
+
+            const query = { subCategory: subcategory };
+
+            const cursor = toyCollection.find(query);
 
             const result = await cursor.toArray();
             res.send(result);
