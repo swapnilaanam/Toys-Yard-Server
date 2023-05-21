@@ -110,10 +110,34 @@ async function run() {
         });
 
 
+        // post route for creating/adding a toy
         app.post('/toys', async (req, res) => {
             const newToy = req.body;
 
             const result = await toyCollection.insertOne(newToy);
+            res.send(result);
+        });
+
+
+        //put route for updating a toy
+        app.put('/toys/:id', async (req, res) => {
+            const id = req.params.id;
+
+            const updatedToy = req.body;
+
+            const filter = { _id: new ObjectId(id) };
+
+            const options = { upsert: true };
+
+            const updateDoc = {
+                $set: {
+                    price: updatedToy.price,
+                    quantity: updatedToy.quantity,
+                    description: updatedToy.description
+                }
+            };
+
+            const result = await toyCollection.updateOne(filter, updateDoc, options);
             res.send(result);
         });
 
