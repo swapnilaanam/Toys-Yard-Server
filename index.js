@@ -25,16 +25,16 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
 
         const subCategoryCollection = client.db('toysDB').collection('subcategories');
         const toyCollection = client.db('toysDB').collection('toys');
 
-        const indexKeys = { toyName: 1 };
+        // const indexKeys = { toyName: 1 };
 
-        const indexOptions = { name: "toyName" }
+        // const indexOptions = { name: "toyName" }
 
-        const result = await toyCollection.createIndex(indexKeys, indexOptions);
+        // const result = await toyCollection.createIndex(indexKeys, indexOptions);
 
         // get route for all sub categories
 
