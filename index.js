@@ -67,6 +67,28 @@ async function run() {
             res.send(result);
         });
 
+        // get route for sorting my toys by price
+        app.get('/toys/sort', async (req, res) => {
+            const sortOrder = req.query.price;
+            const email = req.query.email;
+
+            const query = { sellerEmail: email };
+
+            if (sortOrder === 'Ascending') {
+                const cursor = toyCollection.find(query).sort({ price: 1 }).collation({ locale: "en_US", numericOrdering: true });
+
+                const result = await cursor.toArray();
+                res.send(result);
+            }
+
+            if (sortOrder === 'Descending') {
+                const cursor = toyCollection.find(query).sort({ price: -1 }).collation({ locale: "en_US", numericOrdering: true });
+
+                const result = await cursor.toArray();
+                res.send(result);
+            }
+        });
+
 
         // get route for single toy details
         app.get('/toys/:id', async (req, res) => {
