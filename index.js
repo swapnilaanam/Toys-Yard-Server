@@ -32,7 +32,8 @@ async function run() {
         const userCollection = client.db('toysDB').collection('users');
         const subCategoryCollection = client.db('toysDB').collection('subcategories');
         const toyCollection = client.db('toysDB').collection('toys');
-        const myCollection = client.db("toysDB").collection("mycollections")
+        const myCollection = client.db("toysDB").collection("mycollections");
+        const eventCollection = client.db("toysDB").collection("events");
         const paymentCollection = client.db('toysDB').collection('payments');
 
         // const indexKeys = { toyName: 1 };
@@ -56,6 +57,34 @@ async function run() {
             const user = await userCollection.findOne({ email: email });
 
             if (user?.role === 'Owner') {
+                res.send(true);
+            }
+            else {
+                res.send(false);
+            }
+        })
+
+
+        app.get('/users/role/customer/:email', async (req, res) => {
+            const email = req.params.email;
+
+            const user = await userCollection.findOne({ email: email });
+
+            if (user?.role === 'User') {
+                res.send(true);
+            }
+            else {
+                res.send(false);
+            }
+        })
+
+
+        app.get('/users/role/admin/:email', async (req, res) => {
+            const email = req.params.email;
+
+            const user = await userCollection.findOne({ email: email });
+
+            if (user?.role === 'Admin') {
                 res.send(true);
             }
             else {
@@ -287,6 +316,20 @@ async function run() {
                 const result = await myCollection.insertOne(newToy);
                 res.send(result);
             }
+        })
+
+
+        // events route
+        app.get('/events', async(req, res) => {
+            const result = await eventCollection.find({}).toArray();
+            res.send(result);
+        })
+
+        app.post('/events', async(req, res) => {
+            const newEvent = req.body;
+
+            const result = await eventCollection.insertOne(newEvent);
+            res.send(result);
         })
 
 
